@@ -18,6 +18,9 @@ COPY . /var/www/html/
 WORKDIR /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 
+# Créer le fichier .env par défaut dans le répertoire parent
+RUN printf "# Configuration de base de données pour Docker\nDB_HOST=localhost\nDB_PORT=5432\nDB_NAME=woyofall\nDB_USER=postgres\nDB_USERNAME=postgres\nDB_PASSWORD=password\n\n# Configuration de l'application\nAPP_ENV=production\nAPP_DEBUG=false\nAPP_URL=http://localhost\n" > /var/www/.env
+
 # Copier la configuration Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
 

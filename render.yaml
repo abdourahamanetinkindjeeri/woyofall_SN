@@ -3,6 +3,7 @@ services:
     name: app-woyofall
     runtime: docker
     dockerfilePath: ./Dockerfile.render
+    buildCommand: docker build -f Dockerfile.render -t app-woyofall .
     envVars:
       - key: PHP_VERSION
         value: 8.1
