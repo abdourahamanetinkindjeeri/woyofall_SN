@@ -44,7 +44,20 @@ if ($uri === 'api/achat' && $method === 'POST') {
   exit;
 }
 
-// Route pour la création d'un client
+// Routes pour les clients
+if ($uri === 'api/client' && $method === 'GET') {
+  // Récupérer tous les clients
+  $clients = $clientService->getAllClients();
+  header('Content-Type: application/json');
+  echo json_encode([
+    'data' => array_map(fn($client) => $client->toArray(), $clients),
+    'statut' => 'success',
+    'code' => 200,
+    'message' => 'Clients récupérés'
+  ]);
+  exit;
+}
+
 if ($uri === 'api/client' && $method === 'POST') {
   $data = json_decode(file_get_contents('php://input'), true);
   try {
@@ -69,34 +82,76 @@ if ($uri === 'api/client' && $method === 'POST') {
   exit;
 }
 
-// Route pour l'ajout d'une tranche
-if ($uri === 'api/tranche' && $method === 'POST') {
-  $data = json_decode(file_get_contents('php://input'), true);
-  try {
-    $trancheService->ajouterTranche(
-      $data['nom'],
-      (int)$data['min'],
-      isset($data['max']) ? (int)$data['max'] : null,
-      (float)$data['prix_par_kwh']
-    );
+if (preg_match('/^api\/client\/(\d+)$/', $uri, $matches)) {
+  $clientId = (int) $matches[1];
+
+  if ($method === 'GET') {
+    $client = $clientService->recupererClient($clientId);
+    if (!$client) {
+      header('Content-Type: application/json');
+      http_response_code(404);
+      echo json_encode([
+        'data' => null,
+        'statut' => 'error',
+        'code' => 404,
+        'message' => 'Client non trouvé'
+      ]);
+      exit;
+    }
+
     header('Content-Type: application/json');
     echo json_encode([
-      'data' => null,
+      'data' => $client->toArray(),
       'statut' => 'success',
       'code' => 200,
-      'message' => 'Tranche ajoutée avec succès'
+      'message' => 'Client trouvé'
     ]);
-  } catch (Exception $e) {
-    header('Content-Type: application/json');
-    http_response_code(400);
-    echo json_encode([
-      'data' => null,
-      'statut' => 'error',
-      'code' => 400,
-      'message' => $e->getMessage()
-    ]);
+    exit;
   }
-  exit;
+}
+
+// Routes pour les tranches
+if ($uri === 'api/tranche') {
+  if ($method === 'GET') {
+    // Récupérer toutes les tranches
+    $tranches = $trancheService->recupererTranches();
+    header('Content-Type: application/json');
+    echo json_encode([
+      'data' => array_map(fn($tranche) => $tranche->toArray(), $tranches),
+      'statut' => 'success',
+      'code' => 200,
+      'message' => 'Tranches récupérées'
+    ]);
+    exit;
+  } elseif ($method === 'POST') {
+    // Ajouter une nouvelle tranche
+    $data = json_decode(file_get_contents('php://input'), true);
+    try {
+      $trancheService->ajouterTranche(
+        $data['nom'],
+        (int)$data['min'],
+        isset($data['max']) ? (int)$data['max'] : null,
+        (float)$data['prix_par_kwh']
+      );
+      header('Content-Type: application/json');
+      echo json_encode([
+        'data' => null,
+        'statut' => 'success',
+        'code' => 200,
+        'message' => 'Tranche ajoutée avec succès'
+      ]);
+    } catch (Exception $e) {
+      header('Content-Type: application/json');
+      http_response_code(400);
+      echo json_encode([
+        'data' => null,
+        'statut' => 'error',
+        'code' => 400,
+        'message' => $e->getMessage()
+      ]);
+    }
+    exit;
+  }
 }
 
 // Routes pour les compteurs
@@ -147,6 +202,26 @@ if (preg_match('/^api\/compteur\/(.+)\/reset$/', $uri, $matches)) {
 
   if ($method === 'POST') {
     $compteurController->resetConsommation($numero);
+    exit;
+  }
+}
+
+// Routes pour les achats
+if ($uri === 'api/achat') {
+  if ($method === 'GET') {
+    // Récupérer tous les achats
+    $achats = $achatService->getAllAchats();
+    header('Content-Type: application/json');
+    echo json_encode([
+      'data' => array_map(fn($achat) => $achat->toArray(), $achats),
+      'statut' => 'success',
+      'code' => 200,
+      'message' => 'Achats récupérés'
+    ]);
+    exit;
+  } elseif ($method === 'POST') {
+    // Effectuer un achat
+    $achatController->acheter();
     exit;
   }
 }

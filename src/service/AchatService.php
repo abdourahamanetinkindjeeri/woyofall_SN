@@ -93,4 +93,9 @@ class AchatService implements AchatServiceInterface
     // Retourner le code au format "1234-5678-9012-3456-7890"
     return implode('-', $segments);
   }
+
+  public function getAllAchats(): array
+  {
+    return $this->achatRepository->selectAll();
+  }
 }

@@ -29,4 +29,9 @@ class ClientService implements ClientServiceInterface
   {
     return $this->repository->findOneBy(['id' => $id]);
   }
+
+  public function getAllClients(): array
+  {
+    return $this->repository->selectAll();
+  }
 }

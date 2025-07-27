@@ -1,188 +1,150 @@
 # AppWoyofall - Application de Gestion d'Électricité
 
-## Description
+Application PHP pour la gestion des achats d'électricité avec système de compteurs et tranches tarifaires.
 
-Application PHP pour la gestion des achats d'électricité avec système de tranches tarifaires.
+## 🚀 Déploiement sur Render
 
-## Configuration de la Base de Données
+### Prérequis
 
-### 1. Initialisation de la Base de Données
+- Compte Render
+- Base de données PostgreSQL (Railway ou Render)
 
-```bash
-php setup_database.php
-```
+### Étapes de déploiement
 
-### 2. Test de Connexion
+1. **Fork ou clonez ce repository**
 
-```bash
-php test_connection.php
-```
+2. **Connectez votre repository à Render**
 
-## Structure de la Base de Données
+   - Allez sur [render.com](https://render.com)
+   - Cliquez sur "New +" → "Web Service"
+   - Connectez votre repository GitHub/GitLab
 
-### Tables
+3. **Configurez les variables d'environnement**
+   Dans Render, ajoutez ces variables :
 
-- **client** : Informations des clients
-- **tranche** : Tranches tarifaires d'électricité
-- **achat** : Historique des achats d'électricité
-
-### Données de Base
-
-Les tranches tarifaires suivantes sont créées automatiquement (selon les tarifs Sénénelec) :
-
-- Tranche 1 : 0-150 kWh à 91 FCFA/kWh
-- Tranche 2 : 151-250 kWh à 102 FCFA/kWh
-- Tranche 3 : 251-400 kWh à 116 FCFA/kWh
-- Tranche 4 : 401+ kWh à 132 FCFA/kWh
-
-**Note :** Les tranches se remettent à zéro chaque mois (souvent le 1er du mois).
-
-## Fonctionnalités
-
-### Gestion des Compteurs
-
-- **Consommation mensuelle** : Suivi de la consommation par mois
-- **Consommation annuelle** : Suivi de la consommation par année
-- **Statut de tranche** : Calcul automatique de la tranche tarifaire selon la consommation
-- **Mise à jour automatique** : La consommation est mise à jour après chaque achat
-
-### Données de Test
-
-Le système inclut 30 clients avec leurs compteurs et des données de consommation réalistes :
-
-- Répartition par tranche tarifaire
-- Consommations mensuelles et annuelles
-- Statuts de tranche calculés automatiquement
-
-## API Endpoints
-
-### POST /api/client
-
-Créer un nouveau client
-
-```json
-{
-  "nom": "Doe",
-  "prenom": "John",
-  "telephone": "221701234567",
-  "cni": "1234567890123",
-  "adresse": "123 Rue Example, Dakar",
-  "civilite": "M"
-}
-```
-
-### POST /api/tranche
-
-Ajouter une nouvelle tranche tarifaire
-
-```json
-{
-  "nom": "Tranche 5",
-  "min": 401,
-  "max": 500,
-  "prix_par_kwh": 125.0
-}
-```
-
-### POST /api/achat
-
-Effectuer un achat d'électricité
-
-```json
-{
-  "client_id": 1,
-  "compteur_numero": "COMP001",
-  "nbre_kwt": 150.5
-}
-```
-
-### GET /api/compteur
-
-Récupérer tous les compteurs
-
-### POST /api/compteur
-
-Créer un nouveau compteur
-
-```json
-{
-  "client_id": 1,
-  "tranche_consommee": 0.0,
-  "mois_courant": "2024-01"
-}
-```
-
-### GET /api/compteur/{numero}
-
-Récupérer un compteur par numéro
-
-### PUT /api/compteur/{numero}
-
-Mettre à jour un compteur
-
-### DELETE /api/compteur/{numero}
-
-Supprimer un compteur
-
-### GET /api/compteur/client/{client_id}
-
-Récupérer les compteurs d'un client
-
-### PUT /api/compteur/{numero}/consommation
-
-Mettre à jour la consommation d'un compteur
-
-```json
-{
-  "kwh": 25.5
-}
-```
-
-### POST /api/compteur/{numero}/reset
-
-Réinitialiser la consommation d'un compteur
-
-## Architecture
-
-### Structure des Dossiers
-
-```
-src/
-├── controller/     # Contrôleurs
-├── entity/         # Entités
-├── repository/     # Couche d'accès aux données
-├── service/        # Logique métier
-└── enum/          # Énumérations
-```
-
-### Pattern Utilisé
-
-- **Repository Pattern** : Séparation de la logique d'accès aux données
-- **Service Pattern** : Logique métier centralisée
-- **Interface Pattern** : Contrats pour les dépendances
-
-## Dépendances
-
-- PHP 8.0+
-- PostgreSQL
-- Composer (pour l'autoloading)
-
-## Installation
-
-1. Cloner le projet
-2. Installer les dépendances : `composer install`
-3. Configurer les variables d'environnement :
-   ```bash
-   cp env.example .env
-   # Éditer le fichier .env avec vos vraies informations de connexion
    ```
-4. Configurer la base de données : `php setup_database.php`
-5. Tester la connexion : `php test_connection.php`
-6. Démarrer le serveur : `php -S localhost:8000`
+   DB_HOST=votre_host_postgresql
+   DB_PORT=5432
+   DB_NAME=votre_nom_base
+   DB_USER=votre_utilisateur
+   DB_PASSWORD=votre_mot_de_passe
+   ```
 
-## Configuration
+4. **Déployez**
+   - Render détectera automatiquement le `Dockerfile`
+   - Le build se fera automatiquement
+   - L'application sera accessible sur l'URL fournie par Render
 
-Les paramètres de connexion à la base de données sont dans le fichier `.env`.
-Copiez `env.example` vers `.env` et configurez vos variables d'environnement.
+### Configuration de la base de données
 
-**⚠️ Important :** Le fichier `.env` contient des informations sensibles et ne doit jamais être commité dans Git.
+1. **Créez une base PostgreSQL** (Railway recommandé)
+2. **Récupérez les informations de connexion**
+3. **Ajoutez-les dans les variables d'environnement Render**
+
+## 🛠️ Développement local
+
+### Avec Docker Compose
+
+```bash
+# Copier le fichier d'environnement
+cp env.example .env
+
+# Éditer les variables de base de données
+nano .env
+
+# Démarrer les services
+docker-compose up -d
+
+# Installer les dépendances
+docker-compose exec app composer install
+
+# Configurer la base de données
+docker-compose exec app php setup_database.php
+```
+
+### Sans Docker
+
+```bash
+# Installer les dépendances
+composer install
+
+# Configurer l'environnement
+cp env.example .env
+# Éditer .env avec vos paramètres de base de données
+
+# Configurer la base de données
+php setup_database.php
+
+# Démarrer le serveur
+php -S localhost:8000
+```
+
+## 📊 API Endpoints
+
+### Clients
+
+- `GET /api/client` - Récupérer tous les clients
+- `POST /api/client` - Créer un nouveau client
+- `GET /api/client/{id}` - Récupérer un client par ID
+
+### Compteurs
+
+- `GET /api/compteur` - Récupérer tous les compteurs
+- `POST /api/compteur` - Créer un nouveau compteur
+- `GET /api/compteur/{numero}` - Récupérer un compteur par numéro
+- `PUT /api/compteur/{numero}/consommation` - Mettre à jour la consommation
+
+### Tranches
+
+- `GET /api/tranche` - Récupérer toutes les tranches
+- `POST /api/tranche` - Créer une nouvelle tranche
+
+### Achats
+
+- `GET /api/achat` - Récupérer tous les achats
+- `POST /api/achat` - Effectuer un achat d'électricité
+
+## 🏗️ Architecture
+
+- **Entities** : Modèles de données (Client, Compteur, Tranche, Achat)
+- **Repositories** : Accès aux données
+- **Services** : Logique métier
+- **Controllers** : Gestion des requêtes HTTP
+- **Interfaces** : Contrats pour l'injection de dépendances
+
+## 📈 Fonctionnalités
+
+- Gestion des clients avec informations complètes
+- Système de compteurs avec consommation mensuelle/annuelle
+- Tranches tarifaires selon les tarifs Sénénelec
+- Calcul automatique du statut de tranche
+- Mise à jour automatique de la consommation après achat
+- API REST complète
+
+## 🔧 Technologies
+
+- **Backend** : PHP 8.1, PDO, PostgreSQL
+- **Serveur** : Nginx + PHP-FPM
+- **Containerisation** : Docker
+- **Déploiement** : Render
+- **Base de données** : PostgreSQL (Railway)
+
+## 📝 Tests
+
+Utilisez les fichiers dans le dossier `test/` :
+
+- `.http` files pour VS Code REST Client
+- `test_api.php` pour les tests automatisés
+- `curl` pour les tests manuels
+
+## 🚨 Variables d'environnement
+
+Créez un fichier `.env` basé sur `env.example` :
+
+```
+DB_HOST=votre_host
+DB_PORT=5432
+DB_NAME=votre_base
+DB_USER=votre_utilisateur
+DB_PASSWORD=votre_mot_de_passe
+```

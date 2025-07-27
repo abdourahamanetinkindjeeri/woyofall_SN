@@ -1,0 +1,24 @@
+### Effectuer un achat d'électricité
+POST http://localhost:8001/api/achat
+Content-Type: application/json
+
+{
+  "client_id": 1,
+  "compteur_numero": "CPT000000001",
+  "nbre_kwt": 150.5
+}
+
+### Récupérer tous les achats
+GET http://localhost:8001/api/achat
+
+### Récupérer un achat par référence
+GET http://localhost:8000/api/achat/ACH-1234567890
+
+### Récupérer les achats d'un client
+GET http://localhost:8000/api/achat/client/1
+
+### Récupérer les achats d'un compteur
+GET http://localhost:8000/api/achat/compteur/CPT000000001
+
+### Supprimer un achat
+DELETE http://localhost:8000/api/achat/ACH-1234567890 

@@ -9,21 +9,28 @@ use App\Entity\Tranche;
 
 interface AchatServiceInterface
 {
-    /**
-     * Effectuer un achat de crédit
-     *
-     * @param string $numeroCompteur
-     * @param float $montant
-     * @param Client $client
-     * @param Compteur $compteur
-     * @param Tranche[] $tranches
-     * @return Achat
-     */
-    public function effectuerAchat(
-        string $numeroCompteur,
-        float $montant,
-        Client $client,
-        Compteur $compteur,
-        array $tranches
-    ): Achat;
+  /**
+   * Effectuer un achat de crédit
+   *
+   * @param string $numeroCompteur
+   * @param float $montant
+   * @param Client $client
+   * @param Compteur $compteur
+   * @param Tranche[] $tranches
+   * @return Achat
+   */
+  public function effectuerAchat(
+    string $numeroCompteur,
+    float $montant,
+    Client $client,
+    Compteur $compteur,
+    array $tranches
+  ): Achat;
+
+  /**
+   * Récupérer tous les achats
+   *
+   * @return Achat[]
+   */
+  public function getAllAchats(): array;
 }

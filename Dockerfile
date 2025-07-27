@@ -1,0 +1,29 @@
+FROM php:8.1-fpm
+
+# Installer Nginx et les extensions PHP nécessaires
+RUN apt-get update && apt-get install -y \
+    nginx \
+    libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql
+
+# Copier les fichiers de l'application
+COPY . /var/www/html/
+
+# Copier la configuration Nginx
+COPY nginx.conf /etc/nginx/sites-available/default
+
+# Définir les permissions
+RUN chown -R www-data:www-data /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Créer un script de démarrage
+RUN echo '#!/bin/bash' > /start.sh && \
+    echo 'service nginx start' >> /start.sh && \
+    echo 'php-fpm' >> /start.sh && \
+    chmod +x /start.sh
+
+# Exposer le port
+EXPOSE 80
+
+# Commande de démarrage
+CMD ["/start.sh"] 
