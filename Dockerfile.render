@@ -1,6 +1,6 @@
 FROM nginx:alpine
 
-# Installer PHP et les extensions nécessaires
+# Installer PHP, Composer et les extensions nécessaires
 RUN apk add --no-cache \
     php \
     php-fpm \
@@ -12,17 +12,31 @@ RUN apk add --no-cache \
     php-tokenizer \
     php-xml \
     php-ctype \
-    php-curl
+    php-curl \
+    php-phar \
+    php-iconv \
+    curl \
+    unzip
+
+# Installer Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copier les fichiers de l'application
 COPY . /var/www/html/
 
+# Installer les dépendances Composer
+WORKDIR /var/www/html
+RUN composer install --no-dev --optimize-autoloader
+
+# Copier le fichier d'environnement par défaut
+COPY env.docker /var/www/html/.env
+
 # Copier la configuration Nginx
-COPY nginx.conf /etc/nginx/nginx.conf
+COPY nginx.conf /etc/nginx/ngingx.conf
 
 # Créer un script de démarrage simple
 RUN echo '#!/bin/sh' > /start.sh && \
-    echo 'php-fpm -F &' >> /start.sh && \
+    echo 'php-fpm83 -F &' >> /start.sh && \
     echo 'nginx -g "daemon off;"' >> /start.sh && \
     chmod +x /start.sh
 

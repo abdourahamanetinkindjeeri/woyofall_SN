@@ -1,13 +1,22 @@
 FROM php:8.1-fpm
 
-# Installer Nginx et les extensions PHP nécessaires
+# Installer Nginx, Composer et les extensions PHP nécessaires
 RUN apt-get update && apt-get install -y \
     nginx \
     libpq-dev \
+    curl \
+    unzip \
     && docker-php-ext-install pdo pdo_pgsql
+
+# Installer Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Copier les fichiers de l'application
 COPY . /var/www/html/
+
+# Installer les dépendances Composer
+WORKDIR /var/www/html
+RUN composer install --no-dev --optimize-autoloader
 
 # Copier la configuration Nginx
 COPY nginx.conf /etc/nginx/nginx.conf
