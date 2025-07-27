@@ -10,7 +10,7 @@ RUN apt-get update && apt-get install -y \
 COPY . /var/www/html/
 
 # Copier la configuration Nginx
-COPY nginx.conf /etc/nginx/sites-available/default
+COPY nginx.conf /etc/nginx/nginx.conf
 
 # Définir les permissions
 RUN chown -R www-data:www-data /var/www/html \
