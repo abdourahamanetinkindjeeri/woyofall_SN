@@ -1,0 +1,13 @@
+@baseUrl = http://localhost:8000
+
+POST {{baseUrl}}/api/client
+Content-Type: application/json
+
+{
+    "nom": "Doe",
+    "prenom": "John",
+    "telephone": "771234567",
+    "cni": "1234567890",
+    "adresse": "123 Rue Principale",
+    "civilite": "M."
+}

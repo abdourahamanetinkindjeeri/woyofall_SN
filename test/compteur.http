@@ -1,0 +1,42 @@
+### Créer un nouveau compteur
+POST http://localhost:8000/api/compteur
+Content-Type: application/json
+
+{
+  "client_id": 1,
+  "tranche_consommee": 0.0,
+  "mois_courant": "2024-01"
+}
+
+### Récupérer tous les compteurs
+GET http://localhost:8000/api/compteur
+
+### Récupérer un compteur par numéro
+GET http://localhost:8000/api/compteur/CPT001234567
+
+### Récupérer les compteurs d'un client
+GET http://localhost:8000/api/compteur/client/1
+
+### Mettre à jour un compteur
+PUT http://localhost:8000/api/compteur/CPT001234567
+Content-Type: application/json
+
+{
+  "client_id": 1,
+  "tranche_consommee": 150.5,
+  "mois_courant": "2024-01"
+}
+
+### Mettre à jour la consommation d'un compteur
+PUT http://localhost:8000/api/compteur/CPT001234567/consommation
+Content-Type: application/json
+
+{
+  "kwh": 25.5
+}
+
+### Réinitialiser la consommation d'un compteur
+POST http://localhost:8000/api/compteur/CPT001234567/reset
+
+### Supprimer un compteur
+DELETE http://localhost:8000/api/compteur/CPT001234567 

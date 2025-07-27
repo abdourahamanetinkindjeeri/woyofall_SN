@@ -1,0 +1,32 @@
+# Fichiers d'environnement
+.env
+.env.local
+.env.production
+
+# Dépendances
+/vendor/
+
+# Fichiers de base de données
+*.sqlite
+*.db
+
+# Fichiers de logs
+*.log
+
+# Fichiers temporaires
+*.tmp
+*.temp
+
+# Fichiers de cache
+/cache/
+/tmp/
+
+# Fichiers de configuration IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Fichiers système
+.DS_Store
+Thumbs.db 
