@@ -21,15 +21,15 @@ RUN apk add --no-cache \
 # Installer Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-# Copier les fichiers de l'application
+# Copier les fichiers de l'application (sans .env)
 COPY . /var/www/html/
 
 # Installer les dépendances Composer
 WORKDIR /var/www/html
 RUN composer install --no-dev --optimize-autoloader
 
-# Copier le fichier d'environnement par défaut (après composer install)
-RUN cp env.docker .env
+# Créer le fichier .env par défaut
+RUN printf "# Configuration de base de données pour Docker\nDB_HOST=localhost\nDB_PORT=5432\nDB_NAME=woyofall\nDB_USER=postgres\nDB_USERNAME=postgres\nDB_PASSWORD=password\n\n# Configuration de l'application\nAPP_ENV=production\nAPP_DEBUG=false\nAPP_URL=http://localhost\n" > .env
 
 # Copier la configuration Nginx
 COPY nginx.alpine.conf /etc/nginx/nginx.conf
