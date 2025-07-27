@@ -2,7 +2,7 @@ services:
   - type: web
     name: app-woyofall
     runtime: docker
-    dockerfilePath: ./Dockerfile
+    dockerfilePath: ./Dockerfile.simple
     envVars:
       - key: PHP_VERSION
         value: 8.1

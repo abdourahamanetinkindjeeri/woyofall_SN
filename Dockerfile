@@ -16,9 +16,12 @@ COPY nginx.conf /etc/nginx/sites-available/default
 RUN chown -R www-data:www-data /var/www/html \
     && chmod -R 755 /var/www/html
 
-# Créer un script de démarrage
+# Créer un script de démarrage plus robuste
 RUN echo '#!/bin/bash' > /start.sh && \
-    echo 'service nginx start' >> /start.sh && \
+    echo 'set -e' >> /start.sh && \
+    echo 'echo "Starting nginx..."' >> /start.sh && \
+    echo 'nginx -g "daemon off;" &' >> /start.sh && \
+    echo 'echo "Starting PHP-FPM..."' >> /start.sh && \
     echo 'php-fpm' >> /start.sh && \
     chmod +x /start.sh
 

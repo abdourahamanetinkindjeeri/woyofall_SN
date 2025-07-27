@@ -1,0 +1,40 @@
+FROM nginx:alpine
+
+# Installer PHP et les extensions nécessaires
+RUN apk add --no-cache \
+    php \
+    php-fpm \
+    php-pdo \
+    php-pdo_pgsql \
+    php-json \
+    php-openssl \
+    php-mbstring \
+    php-tokenizer \
+    php-xml \
+    php-ctype \
+    php-curl
+
+# Copier les fichiers de l'application
+COPY . /var/www/html/
+
+# Copier la configuration Nginx
+COPY nginx.alpine.conf /etc/nginx/nginx.conf
+
+# Copier la configuration PHP-FPM
+COPY php-fpm.conf /etc/php-fpm.d/www.conf
+
+# Créer un script de démarrage
+RUN echo '#!/bin/sh' > /start.sh && \
+    echo 'php-fpm -F &' >> /start.sh && \
+    echo 'nginx -g "daemon off;"' >> /start.sh && \
+    chmod +x /start.sh
+
+# Définir les permissions
+RUN chown -R nginx:nginx /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Exposer le port
+EXPOSE 80
+
+# Commande de démarrage
+CMD ["/start.sh"] 
