@@ -40,8 +40,10 @@ RUN echo '#!/bin/sh' > /start.sh && \
     echo 'nginx -g "daemon off;"' >> /start.sh && \
     chmod +x /start.sh
 
-# Définir les permissions
-RUN chown -R nginx:nginx /var/www/html \
+# Vérifier que le dossier public existe et définir les permissions
+RUN ls -la /var/www/html/ && \
+    ls -la /var/www/html/public/ && \
+    chown -R nginx:nginx /var/www/html \
     && chmod -R 755 /var/www/html
 
 # Exposer le port

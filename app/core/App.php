@@ -28,14 +28,12 @@ class App
     $routesPath = __DIR__ . '/../../routes/route.web.php';
 
     if (!file_exists($routesPath)) {
-      error_log("Routes file not found: " . $routesPath);
       return;
     }
 
     $routes = require $routesPath;
 
     if (!isset($routes['api'])) {
-      error_log("No 'api' key found in routes file");
       return;
     }
 

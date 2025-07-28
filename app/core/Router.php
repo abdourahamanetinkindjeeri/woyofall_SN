@@ -46,12 +46,18 @@ class Router
   {
     $uri = trim($uri, '/');
 
+    // Ignorer le préfixe 'api/' s'il existe
+    if (strpos($uri, 'api/') === 0) {
+      $uri = substr($uri, 4); // Enlever 'api/'
+    }
+
     foreach ($this->routes as $route) {
       if ($route['method'] !== $method) {
         continue;
       }
 
       $pattern = $this->buildPattern($route['path']);
+
       if (preg_match($pattern, $uri, $matches)) {
         $this->executeRoute($route, $matches);
         return;
