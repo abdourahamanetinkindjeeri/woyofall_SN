@@ -1,0 +1,34 @@
+### Récupérer tous les clients
+GET http://localhost:8000/api/client
+
+### Créer un nouveau client
+POST http://localhost:8000/api/client
+Content-Type: application/json
+
+{
+  "nom": "Diop",
+  "prenom": "Fatou",
+  "telephone": "221701234567",
+  "cni": "SN1234567890123",
+  "adresse": "Rue Diop 15, Dakar",
+  "civilite": "F"
+}
+
+### Récupérer un client par ID (remplacer {id} par un vrai ID)
+GET http://localhost:8000/api/client/1
+
+### Mettre à jour un client
+PUT http://localhost:8000/api/client/1
+Content-Type: application/json
+
+{
+  "nom": "Diop",
+  "prenom": "Fatou",
+  "telephone": "221701234568",
+  "cni": "SN1234567890123",
+  "adresse": "Rue Diop 16, Dakar",
+  "civilite": "F"
+}
+
+### Supprimer un client
+DELETE http://localhost:8000/api/client/1 

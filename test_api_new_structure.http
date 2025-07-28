@@ -1,0 +1,109 @@
+### Test de la nouvelle structure Woyofall API
+
+### 1. Test de l'endpoint clients
+GET http://localhost:8080/api/client
+Content-Type: application/json
+
+###
+
+### 2. Test de création d'un client
+POST http://localhost:8080/api/client
+Content-Type: application/json
+
+{
+  "nom": "Test Client",
+  "prenom": "John",
+  "email": "john@test.com",
+  "telephone": "123456789"
+}
+
+###
+
+### 3. Test de récupération d'un client par ID
+GET http://localhost:8080/api/client/1
+Content-Type: application/json
+
+###
+
+### 4. Test de l'endpoint compteurs
+GET http://localhost:8080/api/compteur
+Content-Type: application/json
+
+###
+
+### 5. Test de création d'un compteur
+POST http://localhost:8080/api/compteur
+Content-Type: application/json
+
+{
+  "numero": "COMP001",
+  "client_id": 1,
+  "adresse": "123 Rue Test"
+}
+
+###
+
+### 6. Test de l'endpoint tranches
+GET http://localhost:8080/api/tranche
+Content-Type: application/json
+
+###
+
+### 7. Test de création d'une tranche
+POST http://localhost:8080/api/tranche
+Content-Type: application/json
+
+{
+  "nom": "Tranche Test",
+  "min": 0,
+  "max": 100,
+  "prix_par_kwh": 0.15
+}
+
+###
+
+### 8. Test de l'endpoint achats
+GET http://localhost:8080/api/achat
+Content-Type: application/json
+
+###
+
+### 9. Test de création d'un achat
+POST http://localhost:8080/api/achat
+Content-Type: application/json
+
+{
+  "numero_compteur": "COMP001",
+  "montant": 100,
+  "client_id": 1
+}
+
+###
+
+### 10. Test de récupération d'un compteur par numéro
+GET http://localhost:8080/api/compteur/COMP001
+Content-Type: application/json
+
+###
+
+### 11. Test de mise à jour de la consommation
+PUT http://localhost:8080/api/compteur/COMP001/consommation
+Content-Type: application/json
+
+{
+  "kwh": 50.5
+}
+
+###
+
+### 12. Test de réinitialisation de la consommation
+POST http://localhost:8080/api/compteur/COMP001/reset
+Content-Type: application/json
+
+###
+
+### 13. Test de récupération des compteurs d'un client
+GET http://localhost:8080/api/compteur/client/1
+Content-Type: application/json
+
+### 

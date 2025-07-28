@@ -1,0 +1,11 @@
+@baseUrl = http://localhost:8000
+
+POST {{baseUrl}}/api/tranche
+Content-Type: application/json
+
+{
+    "nom": "Tranche 1",
+    "min": 0,
+    "max": 50,
+    "prix_par_kwh": 42.5
+} 

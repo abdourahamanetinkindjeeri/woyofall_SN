@@ -1,0 +1,35 @@
+dependencies:
+  controllers:
+    AchatController: App\Controller\AchatController
+    CompteurController: App\Controller\CompteurController
+    ClientController: App\Controller\ClientController
+    TrancheController: App\Controller\TrancheController
+
+  services:
+    AchatService: App\Service\AchatService
+    ClientService: App\Service\ClientService
+    CompteurService: App\Service\CompteurService
+    TrancheService: App\Service\TrancheService
+
+    repositories:
+    AchatRepository: App\Repository\AchatRepository
+    ClientRepository: App\Repository\ClientRepository
+    CompteurRepository: App\Repository\CompteurRepository
+    TrancheRepository: App\Repository\TrancheRepository
+
+  core:
+    Database: App\Core\Database
+    Router: App\Core\Router
+    App: App\Core\App
+    PDO: PDO
+
+  # Mappings des interfaces vers leurs implémentations
+  interface_mappings:
+    App\Repository\IRepository\ClientRepositoryInterface: App\Repository\ClientRepository
+    App\Repository\IRepository\AchatRepositoryInterface: App\Repository\AchatRepository
+    App\Repository\IRepository\CompteurRepositoryInterface: App\Repository\CompteurRepository
+    App\Repository\IRepository\TrancheRepositoryInterface: App\Repository\TrancheRepository
+    App\Service\IService\ClientServiceInterface: App\Service\ClientService
+    App\Service\IService\AchatServiceInterface: App\Service\AchatService
+    App\Service\IService\CompteurServiceInterface: App\Service\CompteurService
+    App\Service\IService\TrancheServiceInterface: App\Service\TrancheService

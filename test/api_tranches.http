@@ -1,0 +1,29 @@
+### Récupérer toutes les tranches
+GET http://localhost:8000/api/tranche
+
+### Créer une nouvelle tranche
+POST http://localhost:8000/api/tranche
+Content-Type: application/json
+
+{
+  "nom": "Tranche 5",
+  "min": 401,
+  "max": 500,
+  "prix_par_kwh": 125.0
+}
+
+### Récupérer une tranche par nom
+GET http://localhost:8000/api/tranche/Tranche 1
+
+### Mettre à jour une tranche
+PUT http://localhost:8000/api/tranche/Tranche 1
+Content-Type: application/json
+
+{
+  "min": 0,
+  "max": 150,
+  "prix_par_kwh": 91.0
+}
+
+### Supprimer une tranche
+DELETE http://localhost:8000/api/tranche/Tranche 5 

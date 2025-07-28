@@ -1,0 +1,107 @@
+### ========================================
+### TESTS COMPLETS DE L'API REST
+### ========================================
+
+### 1. RÉCUPÉRATION DES DONNÉES DE BASE
+### ========================================
+
+### Récupérer tous les clients
+GET http://localhost:8000/api/client
+
+### Récupérer tous les compteurs
+GET http://localhost:8000/api/compteur
+
+### Récupérer toutes les tranches
+GET http://localhost:8000/api/tranche
+
+### Récupérer tous les achats
+GET http://localhost:8000/api/achat
+
+### 2. TESTS SPÉCIFIQUES PAR CLIENT
+### ========================================
+
+### Récupérer le client avec ID 1
+GET http://localhost:8000/api/client/1
+
+### Récupérer les compteurs du client 1
+GET http://localhost:8000/api/compteur/client/1
+
+### Récupérer les achats du client 1
+GET http://localhost:8000/api/achat/client/1
+
+### 3. TESTS SPÉCIFIQUES PAR COMPTEUR
+### ========================================
+
+### Récupérer le compteur CPT000000001
+GET http://localhost:8000/api/compteur/CPT000000001
+
+### Récupérer les achats du compteur CPT000000001
+GET http://localhost:8000/api/achat/compteur/CPT000000001
+
+### Mettre à jour la consommation du compteur CPT000000001
+PUT http://localhost:8000/api/compteur/CPT000000001/consommation
+Content-Type: application/json
+
+{
+  "kwh": 50.0
+}
+
+### 4. TESTS DE CRÉATION
+### ========================================
+
+### Créer un nouveau client
+POST http://localhost:8000/api/client
+Content-Type: application/json
+
+{
+  "nom": "Test",
+  "prenom": "Utilisateur",
+  "telephone": "221701234567",
+  "cni": "SN1234567890123",
+  "adresse": "Rue Test 123, Dakar",
+  "civilite": "M"
+}
+
+### Créer un nouveau compteur
+POST http://localhost:8000/api/compteur
+Content-Type: application/json
+
+{
+  "client_id": 1,
+  "tranche_consommee": 0.0,
+  "mois_courant": "2024-01"
+}
+
+### 5. TESTS D'ACHAT
+### ========================================
+
+### Effectuer un achat d'électricité
+POST http://localhost:8000/api/achat
+Content-Type: application/json
+
+{
+  "client_id": 1,
+  "compteur_numero": "CPT000000001",
+  "nbre_kwt": 100.0
+}
+
+### 6. TESTS DE STATISTIQUES
+### ========================================
+
+### Récupérer tous les compteurs pour voir la répartition par tranche
+GET http://localhost:8000/api/compteur
+
+### Récupérer tous les clients pour voir la liste complète
+GET http://localhost:8000/api/client
+
+### 7. TESTS DE VALIDATION
+### ========================================
+
+### Tester avec un client inexistant
+GET http://localhost:8000/api/client/999
+
+### Tester avec un compteur inexistant
+GET http://localhost:8000/api/compteur/CPT999999999
+
+### Tester avec une tranche inexistante
+GET http://localhost:8000/api/tranche/Tranche Inexistante 

@@ -1,0 +1,54 @@
+FROM nginx:alpine
+
+# Installer PHP, Composer et les extensions nécessaires
+RUN apk add --no-cache \
+    php \
+    php-fpm \
+    php-pdo \
+    php-pdo_pgsql \
+    php-json \
+    php-openssl \
+    php-mbstring \
+    php-tokenizer \
+    php-xml \
+    php-ctype \
+    php-curl \
+    php-phar \
+    php-iconv \
+    curl \
+    unzip
+
+# Installer Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Copier les fichiers de l'application (sans .env)
+COPY . /var/www/html/
+
+# Installer les dépendances Composer
+WORKDIR /var/www/html
+RUN composer install --no-dev --optimize-autoloader
+
+# Créer le fichier .env par défaut dans le répertoire parent
+RUN printf "# Configuration de base de données pour Docker\nDB_HOST=localhost\nDB_PORT=5432\nDB_NAME=woyofall\nDB_USER=postgres\nDB_USERNAME=postgres\nDB_PASSWORD=password\n\n# Configuration de l'application\nAPP_ENV=production\nAPP_DEBUG=false\nAPP_URL=http://localhost\n" > /var/www/.env
+
+# Copier la configuration Nginx
+COPY nginx.alpine.conf /etc/nginx/nginx.conf
+
+# Copier la configuration PHP-FPM
+COPY php-fpm.conf /etc/php-fpm.d/www.conf
+
+# Créer un script de démarrage
+RUN echo '#!/bin/sh' > /start.sh && \
+    echo 'php-fpm83 -F &' >> /start.sh && \
+    echo 'nginx -g "daemon off;"' >> /start.sh && \
+    chmod +x /start.sh
+
+# Définir les permissions
+RUN chown -R nginx:nginx /var/www/html \
+    && chmod -R 755 /var/www/html
+
+# Exposer le port
+EXPOSE 80
+
+# Commande de démarrage
+CMD ["/start.sh"] 
