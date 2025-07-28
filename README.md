@@ -1,82 +1,93 @@
 # AppWoyofall - Application de Gestion d'Électricité
 
-Application PHP pour la gestion des achats d'électricité avec système de compteurs et tranches tarifaires.
+Application PHP moderne pour la gestion des achats d'électricité avec système de compteurs et tranches tarifaires.
 
-## 🚀 Déploiement sur Render
+## 🏗️ Architecture
+
+### Structure du Projet
+
+```
+woyofall/
+├── app/
+│   ├── config/
+│   │   ├── bootstrap.php      # Configuration initiale
+│   │   ├── dependencies.yaml  # Injection de dépendances
+│   │   ├── env.php           # Variables d'environnement
+│   │   ├── helpers.php       # Fonctions utilitaires
+│   │   └── routes.php        # Configuration des routes
+│   └── core/
+│       ├── App.php           # Classe principale
+│       ├── Container.php     # Conteneur DI
+│       ├── Router.php        # Routeur moderne
+│       ├── Database.php      # Connexion BDD
+│       └── Middlewares.php   # Middlewares
+├── src/
+│   ├── controller/           # Contrôleurs
+│   ├── entity/              # Entités
+│   ├── repository/           # Repositories
+│   ├── service/             # Services
+│   └── enum/                # Énumérations
+├── migrations/              # Migrations BDD
+├── public/                  # Point d'entrée web
+├── routes/                  # Définition des routes
+└── test/                   # Tests API
+```
+
+### Technologies
+
+- **Backend** : PHP 8.1+ avec POO
+- **Architecture** : MVC avec Injection de Dépendances
+- **Base de données** : PostgreSQL
+- **Serveur** : Nginx + PHP-FPM
+- **Containerisation** : Docker
+- **Déploiement** : Render
+- **Gestion des dépendances** : Composer + YAML
+
+## 🚀 Installation et Configuration
 
 ### Prérequis
 
-- Compte Render
-- Base de données PostgreSQL (Railway ou Render)
+- PHP 8.1+
+- Composer
+- PostgreSQL
+- Docker (optionnel)
 
-### Étapes de déploiement
-
-1. **Fork ou clonez ce repository**
-
-2. **Connectez votre repository à Render**
-
-   - Allez sur [render.com](https://render.com)
-   - Cliquez sur "New +" → "Web Service"
-   - Connectez votre repository GitHub/GitLab
-
-3. **Configurez les variables d'environnement**
-   Dans Render, ajoutez ces variables :
-
-   ```
-   DB_HOST=votre_host_postgresql
-   DB_PORT=5432
-   DB_NAME=votre_nom_base
-   DB_USER=votre_utilisateur
-   DB_PASSWORD=votre_mot_de_passe
-   ```
-
-4. **Déployez**
-   - Render détectera automatiquement le `Dockerfile`
-   - Le build se fera automatiquement
-   - L'application sera accessible sur l'URL fournie par Render
-
-### Configuration de la base de données
-
-1. **Créez une base PostgreSQL** (Railway recommandé)
-2. **Récupérez les informations de connexion**
-3. **Ajoutez-les dans les variables d'environnement Render**
-
-## 🛠️ Développement local
-
-### Avec Docker Compose
+### Installation locale
 
 ```bash
-# Copier le fichier d'environnement
+# Cloner le projet
+git clone <repository>
+cd woyofall
+
+# Installer les dépendances
+composer install
+
+# Configurer l'environnement
 cp env.example .env
+# Éditer .env avec vos paramètres
 
-# Éditer les variables de base de données
-nano .env
+# Créer la base de données
+php migrations/migration.php
 
-# Démarrer les services
+# Remplir avec les données initiales
+php migrations/seeder.php
+
+# Démarrer le serveur
+php -S localhost:8000 -t public
+```
+
+### Avec Docker
+
+```bash
+# Construire et démarrer
 docker-compose up -d
 
 # Installer les dépendances
 docker-compose exec app composer install
 
 # Configurer la base de données
-docker-compose exec app php setup_database.php
-```
-
-### Sans Docker
-
-```bash
-# Installer les dépendances
-composer install
-
-# Configurer l'environnement
-cp env.example .env
-# Éditer .env avec vos paramètres de base de données
-
-# Configurer la base de données
-php setup_database.php
-
-# Démarrer le serveur
-php -S localhost:8000
+docker-compose exec app php migrations/migration.php
+docker-compose exec app php migrations/seeder.php
 ```
 
 ## 📊 API Endpoints
@@ -92,7 +103,11 @@ php -S localhost:8000
 - `GET /api/compteur` - Récupérer tous les compteurs
 - `POST /api/compteur` - Créer un nouveau compteur
 - `GET /api/compteur/{numero}` - Récupérer un compteur par numéro
+- `PUT /api/compteur/{numero}` - Mettre à jour un compteur
+- `DELETE /api/compteur/{numero}` - Supprimer un compteur
+- `GET /api/compteur/client/{clientId}` - Compteurs d'un client
 - `PUT /api/compteur/{numero}/consommation` - Mettre à jour la consommation
+- `POST /api/compteur/{numero}/reset` - Réinitialiser la consommation
 
 ### Tranches
 
@@ -104,47 +119,182 @@ php -S localhost:8000
 - `GET /api/achat` - Récupérer tous les achats
 - `POST /api/achat` - Effectuer un achat d'électricité
 
-## 🏗️ Architecture
+## 🗄️ Base de Données
 
-- **Entities** : Modèles de données (Client, Compteur, Tranche, Achat)
-- **Repositories** : Accès aux données
-- **Services** : Logique métier
-- **Controllers** : Gestion des requêtes HTTP
-- **Interfaces** : Contrats pour l'injection de dépendances
+### Tables principales
+
+- **client** : Informations des clients (nom, prénom, téléphone, CNI, adresse, civilité)
+- **compteur** : Compteurs électriques avec consommation et statut
+- **tranche** : Tranches tarifaires (Tranche 1-4 avec prix par kWh)
+- **achat** : Historique des achats d'électricité
+
+### Migrations
+
+```bash
+# Créer les tables
+php migrations/migration.php
+
+# Remplir avec les données initiales
+php migrations/seeder.php
+```
+
+Le seeder récupère automatiquement les clients depuis l'API externe et insère les tranches, compteurs et achats de test.
+
+## 🔧 Configuration
+
+### Variables d'environnement (.env)
+
+```env
+# Base de données
+DB_HOST=localhost
+DB_PORT=5432
+DB_NAME=woyofall
+DB_USERNAME=postgres
+DB_PASSWORD=votre_mot_de_passe
+
+# Application
+URL=http://localhost:8000
+
+# Cloudinary (optionnel)
+CLOUD_NAME=votre_cloud_name
+API_KEY=votre_api_key
+API_SECRET=votre_api_secret
+```
+
+### Injection de Dépendances
+
+Le fichier `app/config/dependencies.yaml` définit toutes les dépendances :
+
+```yaml
+dependencies:
+  controllers:
+    AchatController: App\Controller\AchatController
+    ClientController: App\Controller\ClientController
+    CompteurController: App\Controller\CompteurController
+    TrancheController: App\Controller\TrancheController
+
+  services:
+    AchatService: App\Service\AchatService
+    ClientService: App\Service\ClientService
+    CompteurService: App\Service\CompteurService
+    TrancheService: App\Service\TrancheService
+```
+
+## 🧪 Tests
+
+### Tests API
+
+```bash
+# Tests avec curl
+curl -X GET http://localhost:8000/api/client
+
+# Tests avec VS Code REST Client
+# Ouvrir les fichiers .http dans le dossier test/
+```
+
+### Fichiers de test disponibles
+
+- `test/api_clients.http` - Tests des endpoints clients
+- `test/api_compteurs.http` - Tests des endpoints compteurs
+- `test/api_tranches.http` - Tests des endpoints tranches
+- `test/api_achats.http` - Tests des endpoints achats
+- `test_api_new_structure.http` - Tests complets de la nouvelle structure
+
+## 🚀 Déploiement sur Render
+
+### Configuration automatique
+
+1. **Connectez votre repository à Render**
+2. **Configurez les variables d'environnement** :
+
+   - `DB_HOST`, `DB_PORT`, `DB_NAME`
+   - `DB_USERNAME`, `DB_PASSWORD`
+   - `URL` (URL de votre application Render)
+
+3. **Déployez** : Render détectera automatiquement le `Dockerfile`
+
+### Structure de déploiement
+
+- **Point d'entrée** : `public/index.php`
+- **Configuration Nginx** : Pointe vers `/var/www/html/public`
+- **Docker** : Utilise PHP-FPM + Nginx
 
 ## 📈 Fonctionnalités
 
-- Gestion des clients avec informations complètes
-- Système de compteurs avec consommation mensuelle/annuelle
-- Tranches tarifaires selon les tarifs Sénénelec
+### Gestion des Clients
+
+- Récupération automatique depuis l'API externe
+- Informations complètes (nom, prénom, téléphone, CNI, adresse)
+- Gestion des civilités
+
+### Système de Compteurs
+
+- Numérotation unique des compteurs
+- Association avec les clients
+- Suivi de la consommation mensuelle/annuelle
 - Calcul automatique du statut de tranche
-- Mise à jour automatique de la consommation après achat
-- API REST complète
+- Réinitialisation mensuelle
 
-## 🔧 Technologies
+### Tranches Tarifaires
 
-- **Backend** : PHP 8.1, PDO, PostgreSQL
-- **Serveur** : Nginx + PHP-FPM
-- **Containerisation** : Docker
-- **Déploiement** : Render
-- **Base de données** : PostgreSQL (Railway)
+- 4 tranches selon les tarifs Sénénelec
+- Prix progressifs par kWh
+- Calcul automatique selon la consommation
 
-## 📝 Tests
+### Achats d'Électricité
 
-Utilisez les fichiers dans le dossier `test/` :
+- Vérification de l'existence du compteur
+- Calcul automatique selon les tranches
+- Génération de codes de recharge
+- Historique complet des transactions
 
-- `.http` files pour VS Code REST Client
-- `test_api.php` pour les tests automatisés
-- `curl` pour les tests manuels
+## 🔍 Logs et Monitoring
 
-## 🚨 Variables d'environnement
+- Toutes les demandes d'achat sont journalisées
+- Logs d'erreur et de succès
+- Traçabilité complète des transactions
 
-Créez un fichier `.env` basé sur `env.example` :
+## 📝 Format des Réponses API
 
+### Succès
+
+```json
+{
+  "data": {
+    "compteur": "CPT001",
+    "reference": "ACHAT001",
+    "code": "CODE123",
+    "date": "2025-01-28 10:30:00",
+    "tranche": "Tranche 1",
+    "prix": "91.00",
+    "nbreKwt": "50.0",
+    "client": "Nom Prénom"
+  },
+  "statut": "success",
+  "code": 200,
+  "message": "Achat effectué avec succès"
+}
 ```
-DB_HOST=votre_host
-DB_PORT=5432
-DB_NAME=votre_base
-DB_USER=votre_utilisateur
-DB_PASSWORD=votre_mot_de_passe
+
+### Erreur
+
+```json
+{
+  "data": null,
+  "statut": "error",
+  "code": 404,
+  "message": "Le numéro de compteur non retrouvé"
+}
 ```
+
+## 🤝 Contribution
+
+1. Fork le projet
+2. Créez une branche feature (`git checkout -b feature/AmazingFeature`)
+3. Committez vos changements (`git commit -m 'Add some AmazingFeature'`)
+4. Push vers la branche (`git push origin feature/AmazingFeature`)
+5. Ouvrez une Pull Request
+
+## 📄 Licence
+
+Ce projet est sous licence MIT. Voir le fichier `LICENSE` pour plus de détails.
