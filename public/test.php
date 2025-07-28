@@ -21,6 +21,28 @@ try {
 require_once __DIR__ . '/../app/config/env.php';
 require_once __DIR__ . '/../app/config/helpers.php';
 
-// Démarrer l'application
-$app = App\Core\App::getInstance();
-$app->run();
+// Test simple
+echo "Test de l'application Woyofall\n";
+echo "Variables d'environnement:\n";
+echo "URL: " . ($_ENV['URL'] ?? 'non défini') . "\n";
+echo "DB_USER: " . ($_ENV['DB_USER'] ?? 'non défini') . "\n";
+
+// Test du conteneur
+try {
+  $container = App\Core\Container::getInstance();
+  echo "✓ Conteneur créé avec succès\n";
+
+  // Test du routeur
+  $router = new App\Core\Router($container);
+  echo "✓ Routeur créé avec succès\n";
+
+  // Test de l'application
+  $app = App\Core\App::getInstance();
+  echo "✓ Application créée avec succès\n";
+
+  echo "🎉 Tous les tests sont passés !\n";
+} catch (Exception $e) {
+  echo "❌ Erreur : " . $e->getMessage() . "\n";
+  echo "Fichier : " . $e->getFile() . "\n";
+  echo "Ligne : " . $e->getLine() . "\n";
+}
